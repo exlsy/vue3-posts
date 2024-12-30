@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h2>{{ form.title }}</h2>
-    <p>{{ form.content }}</p>
-    <p class="text-muted">{{ form.createdAt }}</p>
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.content }}</p>
+    <p class="text-muted">{{ post.createdAt }}</p>
     <!-- <hr class="my-4" /> -->
     <!-- <p>params: {{ $route.params }}</p>
     <p>query: {{ $route.query.searchText }}</p>
@@ -25,7 +25,7 @@
         </button>
       </div>
       <div class="col-auto">
-        <button class="btn btn-outline-danger">삭제</button>
+        <button class="btn btn-outline-danger" @click="remove">삭제</button>
       </div>
     </div>
   </div>
@@ -33,7 +33,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { getPostById } from '@/api/posts'
+import { deletePost, getPostById } from '@/api/posts'
 import { ref } from 'vue'
 
 const props = defineProps({
@@ -44,25 +44,50 @@ const props = defineProps({
 const router = useRouter()
 // const id = route.params.id
 // const id = props.id
-const form = ref({})
+const post = ref({})
 
 // console.log('getPostById: ', getPostById(id))
 /**
  * ref로 선언하면 아래와 같이 구조분해할당 객체할당을 할 수 있다.
  * ref의 장점 : 객체할당 가능
  * ref이 장점 : 일관성
- * ref의 단점 : .value를 붙여줘야 한다. (form.value.title, form.value.content)
+ * ref의 단점 : .value를 붙여줘야 한다. (post.value.title, post.value.content)
  *
  * reactive
- * reactive 장점 : form.title, form.content
+ * reactive 장점 : post.title, post.content
  * reactive 단점 : 구조분해할당시 반응성을 잃어버린다.
  */
-const fetchPost = () => {
-  const data = getPostById(props.id)
-  form.value = { ...data }
+const fetchPost = async () => {
+  try {
+    const { data } = await getPostById(props.id)
+    setPost(data)
+    post.value = { ...data }
+  } catch (error) {
+    console.log('error: ', error)
+  }
+}
+
+const setPost = ({ title, content, createdAt }) => {
+  post.value.title = title
+  post.value.content = content
+  post.value.createdAt = createdAt
 }
 
 fetchPost()
+
+const remove = async () => {
+  try {
+    if (confirm('삭제하시겠습니까?')) {
+      await deletePost(props.id)
+
+      router.push({
+        name: 'PostList',
+      })
+    }
+  } catch (error) {
+    console.log('error: ', error)
+  }
+}
 
 const goListPage = () => {
   router.push({
