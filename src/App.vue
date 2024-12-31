@@ -4,8 +4,10 @@ import TheView from '@/layouts/TheView.vue'
 </script>
 
 <template>
-  <TheHeader></TheHeader>
-  <TheView></TheView>
+  <div class="d-flex flex-column">
+    <TheHeader></TheHeader>
+    <TheView></TheView>
+  </div>
 </template>
 
 <style scoped></style>
