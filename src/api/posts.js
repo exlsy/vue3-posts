@@ -20,8 +20,8 @@ export function getPostById(id) {
   // const numberId = parseInt(id)
   // return posts.find(post => post.id === id)
   // return axios.get(`http://localhost:5000/posts/${id}`)
-  // return posts.get(`/${id}`)
-  return posts.get(id)
+  return posts.get(`/${id}`)
+  // return posts.get(id)
 }
 
 export function createPost(data) {
@@ -31,7 +31,7 @@ export function createPost(data) {
 
 export function updatePost(id, data) {
   // return axios.put(`http://localhost:5000/posts/${id}`, data)
-  return posts.put(id, data)
+  return posts.put(`${id}`, data)
 }
 
 export function deletePost(id) {

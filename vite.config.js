@@ -8,6 +8,8 @@ import Components from 'unplugin-vue-components/vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue(), Components(), vueDevTools()],
+  mode: 'development', // production, development
+  envPrefix: 'VITE_',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

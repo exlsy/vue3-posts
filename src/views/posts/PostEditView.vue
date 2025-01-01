@@ -2,7 +2,23 @@
   <div>
     <h2>게시글 수정</h2>
     <hr class="my-4" />
-    <form @submit.prevent="edit">
+    <PostForm
+      v-model:title="form.title"
+      v-model:content="form.content"
+      @submit.prevent="edit"
+    >
+      <template #actions>
+        <button
+          type="button"
+          class="btn btn-outline-danger me-2"
+          @click="goDetailPage"
+        >
+          취소
+        </button>
+        <button class="btn btn-primary">수정</button>
+      </template>
+    </PostForm>
+    <!-- <form @submit.prevent="edit">
       <div class="mb-3">
         <label for="title" class="form-label">제목</label>
         <input
@@ -31,7 +47,7 @@
         </button>
         <button class="btn btn-primary">수정</button>
       </div>
-    </form>
+    </form> -->
   </div>
 </template>
 
@@ -39,6 +55,7 @@
 import { useRoute, useRouter } from 'vue-router'
 import { getPostById, updatePost } from '@/api/posts'
 import { ref } from 'vue'
+import PostForm from '@/components/posts/PostForm.vue'
 
 const route = useRoute()
 const router = useRouter()
