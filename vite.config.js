@@ -7,7 +7,14 @@ import Components from 'unplugin-vue-components/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue(), Components(), vueDevTools()],
+  plugins: [
+    vue(),
+    Components({
+      dirs: ['src/components/app'],
+      dts: true,
+    }),
+    vueDevTools(),
+  ],
   mode: 'development', // production, development
   envPrefix: 'VITE_',
   resolve: {

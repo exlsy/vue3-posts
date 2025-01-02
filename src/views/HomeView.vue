@@ -37,8 +37,8 @@ export default {
 <script setup>
 import { inject, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import AppCard from '@/components/AppCard.vue'
-import AppGrid from '@/components/AppGrid.vue'
+// import AppCard from '@/components/app/AppCard.vue'
+// import AppGrid from '@/components/app/AppGrid.vue'
 
 const router = useRouter()
 const goAboutPage = () => {
