@@ -31,7 +31,8 @@ export function createPost(data) {
 
 export function updatePost(id, data) {
   // return axios.put(`http://localhost:5000/posts/${id}`, data)
-  return posts.put(`${id}`, data)
+  // return posts.put(`${id}`, data)
+  return posts.patch(`${id}`, data)
 }
 
 export function deletePost(id) {
