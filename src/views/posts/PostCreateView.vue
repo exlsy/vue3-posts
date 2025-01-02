@@ -19,6 +19,8 @@
       </template>
     </PostForm>
 
+    <!-- <AppAlert :items="alerts"> </AppAlert> -->
+
     <!-- <form @submit.prevent="save">
       <div class="mb-3">
         <label for="title" class="form-label">제목</label>
@@ -57,6 +59,9 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { createPost } from '@/api/posts'
 import PostForm from '@/components/posts/PostForm.vue'
+import { useAlert } from '@/composables/alert'
+
+const { vAlert, vSuccess } = useAlert()
 
 const router = useRouter()
 
@@ -71,11 +76,13 @@ const save = async () => {
       ...form.value,
       createdAt: Date.now(),
     })
+    vSuccess('등록이 완료되었습니다.')
     router.push({
       name: 'PostList',
     })
   } catch (error) {
     console.log('error:', error)
+    vAlert(error.message, 'error')
   }
 }
 
@@ -84,6 +91,15 @@ const goListPage = () => {
     name: 'PostList',
   })
 }
+
+// const alerts = ref([])
+// const vAlert = (message, type = 'success') => {
+//   alerts.value.push({ message, type })
+//   setTimeout(() => {
+//     alerts.value.shift()
+//   }, 2000)
+// }
+// const vSuccess = message => vAlert(message, 'success')
 </script>
 
 <style lang="scss" scoped></style>

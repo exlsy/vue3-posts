@@ -20,7 +20,7 @@
     </PostForm>
     <!-- <AppAlert :show="showAlert" :message="alertMessage" :type="alertType">
     </AppAlert> -->
-    <AppAlert :items="alerts"> </AppAlert>
+    <!-- <AppAlert :items="alerts"> </AppAlert> -->
     <!-- <form @submit.prevent="edit">
       <div class="mb-3">
         <label for="title" class="form-label">제목</label>
@@ -60,6 +60,9 @@ import { getPostById, updatePost } from '@/api/posts'
 import { ref } from 'vue'
 import PostForm from '@/components/posts/PostForm.vue'
 // import AppAlert from '@/components/app/AppAlert.vue'
+import { useAlert } from '@/composables/alert'
+
+const { vAlert, vSuccess } = useAlert()
 
 const route = useRoute()
 const router = useRouter()
@@ -94,13 +97,11 @@ const edit = async () => {
       ...form.value,
       // createdAt: Date.now(),
     })
-    vAlert('수정이 완료되었습니다.', 'success')
-    // router.push({
-    //   name: 'PostDetail',
-    //   params: {
-    //     id,
-    //   },
-    // })
+    vSuccess('수정이 완료되었습니다.')
+    router.push({
+      name: 'PostDetail',
+      params: { id },
+    })
   } catch (error) {
     console.log('error:', error)
     vAlert('수정 실패하였습니다.', 'error')
@@ -120,19 +121,14 @@ const goDetailPage = () => {
 // const showAlert = ref(false)
 // const alertMessage = ref('')
 // const alertType = ref('success')
-const alerts = ref([])
-const vAlert = (message, type = 'success') => {
-  alerts.value.push({ message, type })
-  // showAlert.value = true
-  // alertMessage.value = message
-  // alertType.value = type
-  setTimeout(() => {
-    alerts.value.shift()
-    // showAlert.value = false
-    // alertMessage.value = ''
-    // alertType.value = 'success'
-  }, 2000)
-}
+// const alerts = ref([])
+// const vAlert = (message, type = 'success') => {
+//   alerts.value.push({ message, type })
+//   setTimeout(() => {
+//     alerts.value.shift()
+//   }, 2000)
+// }
+// const vSuccess = message => vAlert(message, 'success')
 </script>
 
 <style lang="scss" scoped></style>

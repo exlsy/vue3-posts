@@ -4,6 +4,8 @@
       <label for="title" class="form-label">제목</label>
       <!-- <input v-model="form.title" type="text" class="form-control" id="title" /> -->
       <input
+        v-focus
+        v-color="'darkgreen'"
         :value="title"
         @input="$emit('update:title', $event.target.value)"
         type="text"
@@ -29,6 +31,12 @@
 </template>
 
 <script setup>
+// const vFocus = {
+//   mounted: el => {
+//     el.focus()
+//   },
+// }
+
 defineProps({
   title: String,
   content: String,

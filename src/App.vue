@@ -1,13 +1,19 @@
 <script setup>
 import TheHeader from '@/layouts/TheHeader.vue'
 import TheView from '@/layouts/TheView.vue'
+import { useAlert } from './composables/alert'
+
+const { alerts } = useAlert()
 </script>
 
 <template>
-  <div class="d-flex flex-column">
-    <TheHeader></TheHeader>
-    <TheView></TheView>
-  </div>
+  <TheHeader></TheHeader>
+  <TheView></TheView>
+  <AppAlert :items="alerts"></AppAlert>
 </template>
 
-<style scoped></style>
+<style scoped>
+.container {
+  max-width: 940px;
+}
+</style>
