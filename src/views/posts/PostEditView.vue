@@ -1,7 +1,12 @@
 <template>
-  <div>
+  <AppLoading v-if="loading"></AppLoading>
+
+  <AppError v-else-if="error" :message="error.message"></AppError>
+
+  <div v-else>
     <h2>게시글 수정</h2>
     <hr class="my-4" />
+    <AppError v-if="editError" :message="editError.message"></AppError>
     <PostForm
       v-model:title="form.title"
       v-model:content="form.content"
@@ -15,7 +20,18 @@
         >
           취소
         </button>
-        <button class="btn btn-primary">수정</button>
+        <!-- <button class="btn btn-primary">수정</button> -->
+
+        <button class="btn btn-primary" :disabled="editLoading">
+          <template v-if="editLoading">
+            <span
+              class="spinner-grow spinner-grow-sm"
+              aria-hidden="true"
+            ></span>
+            <span class="visually-hidden" role="status">Loading...</span>
+          </template>
+          <template v-else>수정</template>
+        </button>
       </template>
     </PostForm>
     <!-- <AppAlert :show="showAlert" :message="alertMessage" :type="alertType">
@@ -56,11 +72,12 @@
 
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
-import { getPostById, updatePost } from '@/api/posts'
+import { updatePost } from '@/api/posts'
 import { ref } from 'vue'
 import PostForm from '@/components/posts/PostForm.vue'
 // import AppAlert from '@/components/app/AppAlert.vue'
 import { useAlert } from '@/composables/alert'
+import { useAxios } from '@/hooks/useAxios'
 
 const { vAlert, vSuccess } = useAlert()
 
@@ -69,30 +86,45 @@ const router = useRouter()
 
 const id = route.params.id
 
-const form = ref({
-  title: null,
-  content: null,
-})
+// const form = ref({
+//   title: null,
+//   content: null,
+// })
+// const error = ref(null)
+// const loading = ref(false)
 
-const fetchPost = async () => {
-  try {
-    const { data } = await getPostById(id)
-    setForm(data)
-  } catch (error) {
-    console.log('error: ', error)
-    vAlert(error.message, 'error')
-  }
-}
+const {
+  // response,
+  data: form,
+  error,
+  loading,
+} = useAxios(`/posts/${id}`)
 
-const setForm = ({ title, content }) => {
-  form.value.title = title
-  form.value.content = content
-}
+// const fetchPost = async () => {
+//   try {
+//     loading.value = true
+//     const { data } = await getPostById(id)
+//     setForm(data)
+//   } catch (err) {
+//     console.log('error: ', err)
+//     error.value = err
+//     vAlert(err.message, 'error')
+//   } finally {
+//     loading.value = false
+//   }
+// }
+// const setForm = ({ title, content }) => {
+//   form.value.title = title
+//   form.value.content = content
+// }
+// fetchPost()
 
-fetchPost()
+const editError = ref(null)
+const editLoading = ref(false)
 
 const edit = async () => {
   try {
+    editLoading.value = true
     await updatePost(id, {
       ...form.value,
       // createdAt: Date.now(),
@@ -102,9 +134,12 @@ const edit = async () => {
       name: 'PostDetail',
       params: { id },
     })
-  } catch (error) {
-    console.log('error:', error)
+  } catch (err) {
+    console.log('error:', err)
     vAlert('수정 실패하였습니다.', 'error')
+    editError.value = err
+  } finally {
+    editLoading.value = false
   }
 }
 
