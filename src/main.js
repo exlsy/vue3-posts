@@ -3,29 +3,22 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from '@/router'
-// import funcPlugins from './plugins/func'
-// import objPlugins from './plugins/obj'
-import person from './plugins/person'
 import globalComponents from './plugins/global-components'
 import globalDirectives from './plugins/global-directives'
 import dayjs from './plugins/dayjs'
-// import focus from './directives/focus'
 
 const app = createApp(App)
 
-// app.use(funcPlugins)
-// app.use(objPlugins, { name: 'LEE코딩' })
-app.use(person, { name: '홍길동' })
 app.use(globalComponents)
 app.use(globalDirectives)
 app.use(dayjs)
-// app.directive('focus', focus)
+app.use(createPinia())
 
 app.use(router)
 app.mount('#app')
-// createApp(App).mount('#app')
 
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
