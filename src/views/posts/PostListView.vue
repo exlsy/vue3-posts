@@ -2,8 +2,11 @@
   <div>
     <h2>게시글 목록</h2>
     <hr class="my-4" />
-    <PostFilter v-model:title="params.title_like" v-model:limit="params._limit">
-    </PostFilter>
+    <PostFilter
+      v-model:title="params.title_like"
+      :limit="params._limit"
+      @update:limit="changeLimit"
+    />
 
     <hr class="my-4" />
 
@@ -11,8 +14,12 @@
 
     <AppError v-else-if="error" :message="error.message"></AppError>
 
+    <template v-else-if="!isExist">
+      <p class="text-center py-5 text-muted">No Results</p>
+    </template>
+
     <template v-else>
-      <AppGrid :items="posts">
+      <AppGrid :items="posts" col-class="col-12 col-md-6 col-lg-4">
         <template v-slot="{ item }">
           <PostItem
             :title="item.title"
@@ -74,9 +81,14 @@ const params = ref({
   _sort: 'createdAt',
   _order: 'desc',
   _page: 1,
-  _limit: 3,
+  _limit: 6,
   title_like: '',
 })
+
+const changeLimit = value => {
+  params.value._limit = value
+  params.value._page = 1
+}
 
 // pagination
 const totalCount = computed(() => response.value.headers['x-total-count'])
@@ -91,6 +103,10 @@ const {
   error,
   loading,
 } = useAxios('/posts', { method: 'get', params })
+
+const isExist = computed(() => {
+  return posts.value && posts.value.length > 0
+})
 
 // 이렇게 하면 fetchPosts함수내의 반응형 데이터가 변경이되면
 // 해당 콜백함수 (fetchPosts)를 다시 실행한다.

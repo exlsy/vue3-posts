@@ -2,7 +2,8 @@
   <header>
     <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">LEE 코딩</a>
+        <RouterLink class="navbar-brand" to="/">LEE 코딩</RouterLink>
+        <!-- <a class="navbar-brand" href="#">LEE 코딩</a> -->
         <button
           class="navbar-toggler"
           type="button"
