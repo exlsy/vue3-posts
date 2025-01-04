@@ -53,17 +53,10 @@ const form = ref({
   content: null,
 })
 
-// const loading = ref(false)
-// const error = ref(null)
-
 const { error, loading, execute } = useAxios(
   '/posts',
   {
     method: 'post',
-    // data: {
-    //   ...form.value,
-    //   createdAt: Date.now(),
-    // },
   },
   {
     immediate: false,

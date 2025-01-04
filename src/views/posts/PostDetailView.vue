@@ -5,6 +5,7 @@
 
   <div v-else>
     <h2>{{ post.title }}</h2>
+    <p>id: {{ props.id }}, isOdd: {{ isOdd }}</p>
     <p>{{ post.content }}</p>
     <p class="text-muted">
       {{ $dayjs(post.createdAt).format('YYYY. MM. DD HH:mm:ss') }}
@@ -53,24 +54,21 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { deletePost } from '@/api/posts'
-import { ref } from 'vue'
+// import { deletePost } from '@/api/posts'
+// import { ref } from 'vue'
 import { useAxios } from '@/hooks/useAxios'
+import { useAlert } from '@/composables/alert'
+import { computed, toRefs } from 'vue'
+import { useNumber } from '@/composables/number'
+
+const { vAlert, vSuccess } = useAlert()
 
 const props = defineProps({
   id: [String, Number],
 })
 
-// const route = useRoute()
 const router = useRouter()
-// const id = route.params.id
-// const id = props.id
-// const post = ref({})
 
-// const error = ref(null)
-// const loading = ref(false)
-
-// console.log('getPostById: ', getPostById(id))
 /**
  * ref로 선언하면 아래와 같이 구조분해할당 객체할당을 할 수 있다.
  * ref의 장점 : 객체할당 가능
@@ -81,54 +79,70 @@ const router = useRouter()
  * reactive 장점 : post.title, post.content
  * reactive 단점 : 구조분해할당시 반응성을 잃어버린다.
  */
+// const idRef = toRef(props, 'id')
+const { id: idRef } = toRefs(props)
+const { isOdd } = useNumber(idRef)
+const url = computed(() => `/posts/${props.id}`)
 
 const {
   // response,
   data: post,
   error,
   loading,
-} = useAxios(`/posts/${props.id}`)
+} = useAxios(url)
 
-// const fetchPost = async () => {
+const {
+  error: removeError,
+  loading: removeLoading,
+  execute,
+} = useAxios(
+  `/posts/${props.id}`,
+  {
+    method: 'delete',
+  },
+  {
+    immediate: false,
+    onSuccess: () => {
+      vSuccess('삭제가 완료되었습니다.')
+      router.push({
+        name: 'PostList',
+      })
+    },
+    onError: err => {
+      vAlert(err.message, 'error')
+      console.log('error:', err)
+      removeError.value = err
+    },
+  },
+)
+
+const remove = async () => {
+  if (confirm('삭제하시겠습니까?') === false) {
+    return
+  }
+  execute()
+}
+
+// const removeError = ref(null)
+// const removeLoading = ref(false)
+// const remove = async () => {
 //   try {
-//     loading.value = true
-//     const { data } = await getPostById(props.id)
-//     setPost(data)
-//     post.value = { ...data }
+//     if (confirm('삭제하시겠습니까?') === false) {
+//       return
+//     }
+//     removeLoading.value = true
+//     await deletePost(props.id)
+
+//     router.push({
+//       name: 'PostList',
+//     })
 //   } catch (err) {
 //     console.log('error: ', err)
-//     error.value = err
+//     removeError.value = err
 //   } finally {
-//     loading.value = false
+//     removeLoading.value
 //   }
 // }
-// const setPost = ({ title, content, createdAt }) => {
-//   post.value.title = title
-//   post.value.content = content
-//   post.value.createdAt = createdAt
-// }
-// fetchPost()
-
-const removeError = ref(null)
-const removeLoading = ref(false)
-const remove = async () => {
-  try {
-    if (confirm('삭제하시겠습니까?') === false) {
-      return
-    }
-    removeLoading.value = true
-    await deletePost(props.id)
-
-    router.push({
-      name: 'PostList',
-    })
-  } catch (err) {
-    console.log('error: ', err)
-    removeError.value = err
-  } finally {
-    removeLoading.value
-  }
-}
 
 const goListPage = () => {
   router.push({

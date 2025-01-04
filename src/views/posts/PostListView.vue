@@ -20,6 +20,7 @@
             :created-at="item.createdAt"
             @click="goPage(item.id)"
             @modal="openModal(item)"
+            @preview="selectPreview(item.id)"
           ></PostItem>
         </template>
       </AppGrid>
@@ -42,10 +43,10 @@
       </PostModal>
     </Teleport>
 
-    <template v-if="posts && posts.length > 0">
+    <template v-if="previewId">
       <hr class="my-5" />
       <AppCard>
-        <PostDetailView :id="posts[0].id"></PostDetailView>
+        <PostDetailView :id="previewId"></PostDetailView>
       </AppCard>
     </template>
   </div>
@@ -63,6 +64,11 @@ import AppLoading from '@/components/app/AppLoading.vue'
 import { useAxios } from '@/hooks/useAxios'
 
 const router = useRouter()
+
+const previewId = ref(null)
+const selectPreview = id => {
+  previewId.value = id
+}
 
 const params = ref({
   _sort: 'createdAt',
@@ -85,23 +91,6 @@ const {
   error,
   loading,
 } = useAxios('/posts', { method: 'get', params })
-
-// const fectchPosts = async () => {
-//   try {
-//     loading.value = true
-//     // ({ data: posts.value } = await getPosts())
-//     const { data, headers } = await getPosts(params.value)
-//     posts.value = data
-//     // console.dir(data)
-//     totalCount.value = headers['x-total-count']
-//     // console.log('response: ', response)
-//   } catch (err) {
-//     console.log('error:', err)
-//     error.value = err
-//   } finally {
-//     loading.value = false
-//   }
-// }
 
 // 이렇게 하면 fetchPosts함수내의 반응형 데이터가 변경이되면
 // 해당 콜백함수 (fetchPosts)를 다시 실행한다.
